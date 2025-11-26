@@ -1,40 +1,42 @@
 class Song {
   final String _id; //No modificable
-  String _nom;
-  List<String> _artista; //Pot tenir mes d'un artista
+  String _name;
+  List<String> _artist; //Pot tenir mes d'un artista
   List<String> _albumId; //Pot estar en mes d'un album
-  double _durada; //Durada de la cançó
-  final DateTime _dataPujada; //No modificable
-  final String _uploaderId; //No modificable
+  double _duration; //Durada de la cançó
+  final String _creatorId; //No modificable
+  DateTime _createdAt; //No modificable
 
   //Constructor
   Song({
     required String id,
-    required String nom,
-    required List<String> artista,
+    required String name,
+    required List<String> artist,
     List<String>? albumId,
-    required double durada,
-    required String uploaderId,
+    required double duration,
+    required String creatorId,
+    DateTime? createdAt, //Només admin.
   }) : _id = id,
-       _nom = nom,
-       _artista = artista,
+       _name = name,
+       _artist = artist,
        _albumId = albumId ?? [], //Si albumId == null, es substitueix per empty.
-       _durada = durada,
-       _dataPujada = DateTime.now(), //Guarda data de pujada.
-       _uploaderId = uploaderId;
+       _duration = duration,
+       _creatorId = creatorId,
+       _createdAt = createdAt ?? DateTime.now(); //Guarda data de pujada.
 
   //Llista de getters
   String get id => _id;
-  String get nom => _nom;
-  List<String> get artista => _artista;
+  String get name => _name;
+  List<String> get artist => _artist;
   List<String> get albumId => _albumId;
-  double get durada => _durada;
-  DateTime get dataPujada => _dataPujada;
-  String get uploaderId => _uploaderId;
+  double get duration => _duration;
+  String get creatorId => _creatorId;
+  DateTime get createdAt => _createdAt;
 
   //Llista de Setters
-  set nom(String nom) => _nom = nom;
-  set artista(List<String> artista) => _artista = artista;
+  set name(String name) => _name = name;
+  set artist(List<String> artist) => _artist = artist;
   set albumId(List<String> albumId) => _albumId = albumId;
-  set durada(double durada) => _durada = durada;
+  set duration(double duration) => _duration = duration;
+  set createdAt(DateTime createdAt) => _createdAt = createdAt; //admin
 }
