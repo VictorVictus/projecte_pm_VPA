@@ -1,16 +1,16 @@
-class UserSavedAlbum {
+class SongAlbum {
   final String _id;
   final String _albumId;
-  final DateTime _savedAt;
+  final DateTime _addedAt;
 
   //Constructor
-  UserSavedAlbum({required String id, required String albumId})
+  SongAlbum({required String id, required String albumId})
     : _id = id,
       _albumId = albumId,
-      _savedAt = DateTime.now();
+      _addedAt = DateTime.now();
 
   //Llista de getters
   String get id => _id;
   String get albumId => _albumId;
-  DateTime get savedAt => _savedAt;
+  DateTime get addedAt => _addedAt;
 }

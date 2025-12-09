@@ -1,5 +1,5 @@
 class UserPlayHistory {
-  final String _id; //No modificable
+  final String _id;
   final String _songId;
   double _playDuration;
   bool _completed;
@@ -24,5 +24,6 @@ class UserPlayHistory {
   DateTime get playedAt => _playedAt;
 
   //Llista de setters
+  set playDuration(double playDuration) => _playDuration = playDuration;
   set completed(bool completed) => _completed = completed;
 }
