@@ -11,12 +11,10 @@ import 'package:projecte_pm/pages/EditProfilePage.dart';
 
 class LandingArtistPage extends StatefulWidget {
   final String artistId;
-  final bool shouldNavigateToEdit;
 
   const LandingArtistPage({
     super.key,
     required this.artistId,
-    this.shouldNavigateToEdit = false,
   });
 
   @override
@@ -48,17 +46,6 @@ class _LandingArtistPageState extends State<LandingArtistPage> {
         setState(() {
           if (artist != null) {
             _artistProfile = artist;
-
-            // --- LÒGICA DE REDIRECCIÓ AUTOMÀTICA ---
-            // Si el widget ens diu que hem d'editar i encara no hem redirigit:
-            if (widget.shouldNavigateToEdit && !_hasRedirectedToEdit) {
-              _hasRedirectedToEdit = true;
-
-              // Fem servir addPostFrameCallback per navegar després de construir la UI
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _navigateToEditProfile();
-              });
-            }
           }
           _isLoading = false;
         });

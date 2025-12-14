@@ -29,12 +29,7 @@ class UserService {
     if (_currentUserRef == null) return;
     try {
       // Actualitzem només els camps necessaris (excepte ID i email que solen ser fixos)
-      await _currentUserRef!.update({
-        'name': user.name,
-        'bio': user.bio,
-        'photoURL': user.photoURL,
-        // No actualitzem createdAt
-      });
+      await _currentUserRef!.update(user.toMap());
     } catch (e) {
       print("Error actualitzant usuari: $e");
       rethrow; // Llancem l'error perquè la UI sàpiga que ha fallat
@@ -75,8 +70,6 @@ class UserService {
       _firestore
           .collection('users')
           .doc(targetUserId)
-          .collection('followers')
-          .doc(_currentUserId)
           .collection('followers')
           .doc(_currentUserId),
     );

@@ -10,12 +10,10 @@ import 'package:projecte_pm/pages/EditProfilePage.dart';
 
 class LandingUserPage extends StatefulWidget {
   final String userId;
-  final bool shouldNavigateToEdit;
 
   const LandingUserPage({
     super.key,
     required this.userId,
-    this.shouldNavigateToEdit = false,
   });
 
   @override
@@ -47,17 +45,6 @@ class _LandingUserPageState extends State<LandingUserPage> {
         setState(() {
           if (user != null) {
             _userProfile = user;
-
-            // --- LÒGICA DE REDIRECCIÓ AUTOMÀTICA ---
-            // Si el widget ens diu que hem d'editar i encara no hem redirigit:
-            if (widget.shouldNavigateToEdit && !_hasRedirectedToEdit) {
-              _hasRedirectedToEdit = true;
-
-              // Fem servir addPostFrameCallback per navegar després de construir la UI
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _navigateToEditProfile();
-              });
-            }
           }
           _isLoading = false;
         });

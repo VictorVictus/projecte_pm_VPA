@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projecte_pm/LandingArtistPage.dart';
+import 'package:projecte_pm/LandingUserPage.dart';
 
 import 'package:projecte_pm/services/LoginRegisterService.dart';
 
@@ -18,43 +20,98 @@ class RoleSelectionScreen extends StatefulWidget {
 }
 
 class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
+  bool _isLoading = false;
+
+  Future<void> _selectRole(String role) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      if (role == 'user') {
+        await LoginRegisterService.newUser(
+          userId: widget._userId,
+          userEmail: widget._userEmail,
+        );
+        // Directament a la pàgina de user
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LandingUserPage(userId: widget._userId),
+            ),
+          );
+        }
+      } else {
+        await LoginRegisterService.newArtist(
+          artistId: widget._userId,
+          artistEmail: widget._userEmail,
+        );
+        // Directament a la pàgina d'artist
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LandingArtistPage(artistId: widget._userId),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Completa el teu Perfil'),
-        automaticallyImplyLeading: false, //Treure flecha automatica del push
+        automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: Column(
-          children: [
-            Text('Selecciona el teu Rol'),
-            Row(
-              children: [
-                ElevatedButton(
-                  child: Text('User'),
-                  onPressed: () {
-                    LoginRegisterService.newUser(
-                      userId: widget._userId,
-                      userEmail: widget._userEmail,
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-                ElevatedButton(
-                  child: Text('Artist'),
-                  onPressed: () {
-                    LoginRegisterService.newArtist(
-                      artistId: widget._userId,
-                      artistEmail: widget._userEmail,
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
+        child: _isLoading
+            ? const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 20),
+                  Text('Guardant el teu perfil...'),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Selecciona el teu Rol',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(height: 50),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () => _selectRole('user'),
+                        child: const Text('User'),
+                      ),
+                      const SizedBox(width: 50),
+                      ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () => _selectRole('artist'),
+                        child: const Text('Artist'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }
