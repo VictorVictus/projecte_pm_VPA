@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:projecte_pm/models/user/user.dart';
+import 'package:projecte_pm/models/user.dart';
 import 'package:projecte_pm/services/UserService.dart';
 
-class LibraryPage extends StatefulWidget{
+class LibraryPage extends StatefulWidget {
   final UserService userService;
 
   const LibraryPage({super.key, required this.userService});
@@ -12,7 +12,6 @@ class LibraryPage extends StatefulWidget{
 }
 
 class _LibraryPageState extends State<LibraryPage> {
-
   @override
   void initState() {
     super.initState();
@@ -23,7 +22,7 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        "Library View\n(Aquí carregaràs playlists guardades)", 
+        "Library View\n(Aquí carregaràs playlists guardades)",
         textAlign: TextAlign.center,
         style: TextStyle(color: Colors.white),
       ),

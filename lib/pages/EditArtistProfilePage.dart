@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projecte_pm/models/artist/artist.dart';
+import 'package:projecte_pm/models/artist.dart';
 import 'package:projecte_pm/services/ArtistService.dart';
 
 class EditArtistProfilePage extends StatefulWidget {

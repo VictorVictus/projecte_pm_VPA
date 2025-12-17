@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projecte_pm/models/user/user.dart';
+import 'package:projecte_pm/models/user.dart';
 import 'package:projecte_pm/services/UserService.dart';
 import 'package:projecte_pm/widgets/history_list.dart';
 
@@ -27,7 +27,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // Extracció de dades segura per mostrar a la UI
-    String bio = widget.userService.user.bio.isEmpty ? "Sense bio" : widget.userService.user.bio;
+    String bio = widget.userService.user.bio.isEmpty
+        ? "Sense bio"
+        : widget.userService.user.bio;
 
     return Center(
       child: Column(

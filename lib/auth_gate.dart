@@ -97,14 +97,14 @@ class AuthGate extends StatelessWidget {
           future: LoginRegisterService.getUserRole(userId),
           builder: (context, roleSnapshot) {
             // 1. Carregant
-            if (roleSnapshot.connectionState == ConnectionState.waiting) {
+            /*if (roleSnapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
                 backgroundColor: Color(0xFF121212),
                 body: Center(
                   child: CircularProgressIndicator(color: Colors.blueAccent),
                 ),
               );
-            }
+            } */
 
             // 2. Tenim el rol
             if (roleSnapshot.hasData) {
@@ -119,10 +119,10 @@ class AuthGate extends StatelessWidget {
               } else {
                 // 'unknown': Cas especial. Està loguejat a Firebase Auth però no té dades a Firestore.
                 // (Va tancar l'app abans de triar). El tornem a enviar a triar.
-                return RoleSelectionScreen(
+                /*return RoleSelectionScreen(
                   userId: userId,
                   userEmail: snapshot.data!.email ?? '',
-                );
+                ); */
               }
             }
 

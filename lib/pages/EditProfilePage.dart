@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projecte_pm/models/user/user.dart';
+import 'package:projecte_pm/models/user.dart';
 import 'package:projecte_pm/services/UserService.dart';
 
 class EditProfilePage extends StatefulWidget {

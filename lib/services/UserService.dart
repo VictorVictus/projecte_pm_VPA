@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:projecte_pm/models/user/user.dart';
-import 'package:projecte_pm/models/user/user_follower.dart';
+import 'package:projecte_pm/models/user.dart';
+import 'package:projecte_pm/models/user/user_follow.dart';
 import 'dart:developer';
 
 class UserService {

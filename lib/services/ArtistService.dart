@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:projecte_pm/models/artist/artist.dart';
+import 'package:projecte_pm/models/artist.dart';
 import 'dart:developer';
 
 class ArtistService {

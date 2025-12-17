@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:projecte_pm/auth_gate.dart';
-import 'package:projecte_pm/models/artist/artist.dart';
+import 'package:projecte_pm/models/artist.dart';
 import 'package:projecte_pm/pages/EditArtistProfilePage.dart';
 import 'package:projecte_pm/pages/HomePage.dart';
 import 'package:projecte_pm/pages/LibraryPage.dart';

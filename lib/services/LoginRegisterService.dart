@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:projecte_pm/models/artist/artist.dart';
-import 'package:projecte_pm/models/user/user.dart';
+import 'package:projecte_pm/models/artist.dart';
+import 'package:projecte_pm/models/user.dart';
 
 class LoginRegisterService {
   static Future<String> getUserRole(String uid) async {
