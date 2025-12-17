@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:projecte_pm/models/subClass/save_id.dart';
 import 'package:projecte_pm/models/user.dart';
-import 'package:projecte_pm/models/user/user_follow.dart';
 import 'dart:developer';
 
 class UserService {
@@ -77,7 +77,7 @@ class UserService {
         .collection('followers')
         .doc(_user.id);
 
-    final relation = UserFollower(userId: targetUserId);
+    final relation = SaveId(id: targetUserId);
 
     batch.set(myFollowingRef, relation.toMap());
     batch.set(targetUserRef, relation.toMap());
