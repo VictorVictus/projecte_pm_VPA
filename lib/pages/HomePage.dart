@@ -1,55 +1,128 @@
 import 'package:flutter/material.dart';
-import 'package:projecte_pm/models/user.dart';
 import 'package:projecte_pm/services/UserService.dart';
 import 'package:projecte_pm/widgets/history_list.dart';
 
 class HomePage extends StatefulWidget {
   final UserService userService;
+  // AFEGIT: Funció callback per avisar al pare (LandingUserPage)
+  final Function(String id, String type) onItemSelected;
 
-  const HomePage({super.key, required this.userService});
+  const HomePage({
+    super.key, 
+    required this.userService, 
+    required this.onItemSelected, // Obligatori ara
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // Aquí definiràs les teves llistes locals
-  // List<Album> _recentAlbums = [];
 
   @override
   void initState() {
     super.initState();
-    // AQUÍ és on cridaràs al teu servei per omplir aquesta vista
-    // _loadHomeData(widget.userProfile.id);
     print("Iniciant HomePage per a: ${widget.userService.user.name}");
   }
 
   @override
   Widget build(BuildContext context) {
-    // Extracció de dades segura per mostrar a la UI
-    String bio = widget.userService.user.bio.isEmpty
-        ? "Sense bio"
-        : widget.userService.user.bio;
+    // Fem servir SingleChildScrollView per evitar errors d'espai (overflow)
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            
+            // Opcional: Títol de benvinguda intern (si no el vols al AppBar)
+            
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                "Benvingut de nou",
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 10),
+            
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Home View",
-            style: TextStyle(color: Colors.white, fontSize: 24),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            "Bio del model passat: $bio",
-            style: TextStyle(color: Colors.grey),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "(Aquí carregaràs els àlbums, history, etc.)",
-            style: TextStyle(color: Colors.grey),
-          ),
-        ],
+            // --- SECCIÓ 1: NOVETATS GLOBALS ---
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: widget.userService.getGlobalNewReleases(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "Error carregant novetats",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  );
+                }
+
+                final data = snapshot.data ?? [];
+                if (data.isEmpty) return const SizedBox.shrink();
+
+                return HorizontalCardList(
+                  listName: "Novetats a descobrir",
+                  items: data,
+                  onTap: (id, type) {
+                    // AQUÍ ESTÀ LA CLAU: No naveguem, avisem al pare
+                    widget.onItemSelected(id, type);
+                  },
+                );
+              },
+            ),
+
+            const SizedBox(height: 30),
+
+            // --- SECCIÓ 2: ARTISTES QUE SEGUEIXO ---
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: widget.userService.getFollowedArtistsReleases(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                final data = snapshot.data ?? [];
+
+                if (data.isEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 100,
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      "Segueix artistes per veure les seves novetats aquí.",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  );
+                }
+
+                return HorizontalCardList(
+                  listName: "Dels teus artistes",
+                  items: data,
+                  onTap: (id, type) {
+                    // AQUÍ TAMBÉ: Avisem al pare
+                    widget.onItemSelected(id, type);
+                  },
+                );
+              },
+            ),
+
+            const SizedBox(height: 100), // Espai extra al final perquè no tapi el reproductor
+          ],
+        ),
       ),
     );
   }

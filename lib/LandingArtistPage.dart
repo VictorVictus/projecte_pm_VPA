@@ -141,7 +141,7 @@ class _LandingArtistPageState extends State<LandingArtistPage> {
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: CircleAvatar(
                 radius: 16,
-                backgroundImage: AssetImage('img/SpotyUPC.png'),
+                backgroundImage: AssetImage('icons/SpotyUPC.png'),
               ),
             ),
             Column(
