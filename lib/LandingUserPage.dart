@@ -118,7 +118,13 @@ class _LandingUserPageState extends State<LandingUserPage> {
           onItemSelected: _onHomeItemSelected, // Passem el callback aquí!
         );
       case 1:
-        return SearchPage(service: _userService);
+        if (_currentDetailView != null) {
+          return _currentDetailView!;
+        }
+        return SearchPage(
+          service: _userService,
+          onItemSelected: _onHomeItemSelected,
+        );
       case 2:
         return LibraryPage(userService: _userService);
       case 3:
@@ -145,7 +151,7 @@ class _LandingUserPageState extends State<LandingUserPage> {
     }
 
     // Comprovem si hem de mostrar la fletxa enrere
-    bool isShowingDetail = (_currentIndex == 0 && _currentDetailView != null);
+    bool isShowingDetail = (_currentDetailView != null);
 
     return PopScope(
       canPop: true,

@@ -102,109 +102,147 @@ class UserService {
     await batch.commit();
   }
 
-  // Rebre novetats
-  Future<List<Map<String, dynamic>>> getGlobalNewReleases() async {
-
+  /////////////////////////////////////////////////////////////////////////////
+  // Rebre novetats                                                          //
+  /////////////////////////////////////////////////////////////////////////////
+  Future<List<Map<String, dynamic>>> getGlobalNewReleases({
+    String? name,
+    String? type,
+  }) async {
     try {
+      final futures = <Future<QuerySnapshot>>[];
+
       // 1. SONGS
-     // log('2. Llançant consulta Songs...', name: 'DEBUG_FIREBASE');
-      final songsQuery = _firestore
-          .collection('songs')
-          .orderBy('createdAt', descending: true)
-          .limit(5)
-          .get();
+      // log('2. Llançant consulta Songs...', name: 'DEBUG_FIREBASE');
+      if (type == null || type == 'song') {
+        Query<Map<String, dynamic>> query = _firestore.collection('songs');
+        query = (name == null || name.isEmpty)
+            ? query.orderBy('createdAt', descending: true).limit(5)
+            : query
+                  .where('name', isGreaterThanOrEqualTo: name)
+                  .where('name', isLessThan: name + '\uf8ff')
+                  .orderBy('name');
+
+        futures.add(query.get());
+      }
 
       // 2. ALBUMS
-     // log('3. Llançant consulta Albums...', name: 'DEBUG_FIREBASE');
-      final albumsQuery = _firestore
-          .collection('albums')
-          .orderBy('createdAt', descending: true)
-          .limit(5)
-          .get();
+      // log('3. Llançant consulta Albums...', name: 'DEBUG_FIREBASE');
+      if (type == null || type == 'album') {
+        Query<Map<String, dynamic>> query = _firestore.collection('albums');
+        query = (name == null || name.isEmpty)
+            ? query.orderBy('createdAt', descending: true).limit(5)
+            : query
+                  .where('name', isGreaterThanOrEqualTo: name)
+                  .where('name', isLessThan: name + '\uf8ff')
+                  .orderBy('name');
+
+        futures.add(query.get());
+      }
 
       // 3. PLAYLISTS (Aquesta sol fallar per l'índex)
-      /*log('4. Llançant consulta Playlists...', name: 'DEBUG_FIREBASE');
-      final playlistsQuery = _firestore
-          .collection('playlists')
-          .where('isPublic', isEqualTo: true)
-          .orderBy('createdAt', descending: true)
-          .limit(5)
-          .get();*/
+      //log('4. Llançant consulta Playlists...', name: 'DEBUG_FIREBASE');
+      if (type == null || type == 'playlist') {
+        var query = _firestore
+            .collection('playlists')
+            .where('isPublic', isEqualTo: true);
+        query = (name == null || name.isEmpty)
+            ? query.orderBy('createdAt', descending: true).limit(5)
+            : query
+                  .where('name', isGreaterThanOrEqualTo: name)
+                  .where('name', isLessThan: name + '\uf8ff')
+                  .orderBy('name');
+        futures.add(query.get());
+      }
 
-      // Esperem totes
-      final results = await Future.wait([
-        songsQuery,
-        albumsQuery,
-        //playlistsQuery,
-      ]);
+      // 4. ARTISTS
+      if (type == null || type == 'artist') {
+        Query<Map<String, dynamic>> query = _firestore.collection('artists');
+        query = (name == null || name.isEmpty)
+            ? query.orderBy('createdAt', descending: true).limit(5)
+            : query
+                  .where('name', isGreaterThanOrEqualTo: name)
+                  .where('name', isLessThan: name + '\uf8ff')
+                  .orderBy('name');
+        futures.add(query.get());
+      }
 
-     /* log(
+      // 5. USERS
+      if (type == null || type == 'user') {
+        Query<Map<String, dynamic>> query = _firestore.collection('user');
+        query = (name == null || name.isEmpty)
+            ? query.orderBy('createdAt', descending: true).limit(5)
+            : query
+                  .where('name', isGreaterThanOrEqualTo: name)
+                  .where('name', isLessThan: name + '\uf8ff')
+                  .orderBy('name');
+        futures.add(query.get());
+      }
+
+      final results = await Future.wait(futures);
+
+      /* log(
         '5. Resultats rebuts. Songs: ${results[0].size}, Albums: ${results[1].size}, Playlists: {results[2].size}',
         name: 'DEBUG_FIREBASE',
       );*/
 
-      List<Map<String, dynamic>> mixedList = [];
+      final mixedList = <Map<String, dynamic>>[];
 
       // Funció auxiliar per llegir dates de forma segura
-      DateTime getDate(DocumentSnapshot doc) {
+      Timestamp getDate(DocumentSnapshot doc) {
         final data = doc.data() as Map<String, dynamic>?;
-        if (data != null &&
-            data['createdAt'] != null &&
-            data['createdAt'] is Timestamp) {
-          return (data['createdAt'] as Timestamp).toDate();
+        if (data?['createdAt'] is Timestamp) {
+          return (data!['createdAt'] as Timestamp);
         }
-        return DateTime.now(); // Data per defecte si falla
+        return Timestamp.now(); // fallback seguro
       }
 
-      // Processar Cançons
-      for (var doc in results[0].docs) {
-        final data = doc.data() as Map<String, dynamic>; // Casteig segur a Map
-        mixedList.add({
-          'id': doc.id,
-          'type': 'song',
-          'title': data['name'] ?? 'Sense títol',
-          'subtitle': 'Song',
-          'imageUrl': data['coverURL'] ?? '',
-          'createdAt': getDate(doc),
-        });
-      }
+      for (var snap in results) {
+        if (snap.docs.isEmpty) continue;
+        for (var doc in snap.docs) {
+          final data = doc.data() as Map<String, dynamic>;
 
-      // Processar Àlbums
-      for (var doc in results[1].docs) {
-        final data = doc.data() as Map<String, dynamic>;
-        mixedList.add({
-          'id': doc.id,
-          'type': 'album',
-          'title': data['name'] ?? 'Sense títol',
-          'subtitle': 'Àlbum',
-          'imageUrl': data['coverURL'] ?? '',
-          'createdAt': getDate(doc),
-        });
+          // Normalizamos el tipo: quitamos la 's' final
+          String parentId =
+              doc.reference.parent.id; // 'songs', 'albums', 'playlists'
+          String type;
+          switch (parentId) {
+            case 'songs':
+              type = 'song';
+              break;
+            case 'albums':
+              type = 'album';
+              break;
+            case 'playlists':
+              type = 'playlist';
+              break;
+            case 'artists':
+              type = 'artist';
+              break;
+            case 'users':
+              type = 'user';
+              break;
+            default:
+              type = parentId;
+          }
+
+          mixedList.add({
+            'id': doc.id,
+            'type': type,
+            'title': data['name'] ?? 'Sin título',
+            'subtitle': type == 'user' ? data['email'] ?? '' : 'subtitle',
+            'imageUrl': data['coverURL'] ?? data['avatarURL'] ?? '',
+            'createdAt': getDate(doc),
+          });
+        }
       }
-      /*
-      // Processar Playlists
-      for (var doc in results[2].docs) {
-        final data = doc.data() as Map<String, dynamic>;
-        mixedList.add({
-          'id': doc.id,
-          'type': 'playlist',
-          'title': data['name'] ?? 'Sense nom',
-          'subtitle': 'Playlist',
-          'imageUrl': data['coverURL'] ?? '',
-          'createdAt': getDate(doc),
-        });
-      }*/
 
       mixedList.sort((a, b) => b['createdAt'].compareTo(a['createdAt']));
-
-      /*log(
-        '6. Finalitzat amb ${mixedList.length} elements.',
-        name: 'DEBUG_FIREBASE',
-      );*/
-      return mixedList.take(10).toList();
+      return (name == null || name.isEmpty)
+          ? mixedList.take(10).toList()
+          : mixedList.toList();
     } catch (e, stackTrace) {
-      // Això és vital per veure l'error real
-      log('ERROR CRÍTIC: $e', name: 'DEBUG_ERROR');
+      log('ERROR CRÍTICO: $e', name: 'DEBUG_ERROR');
       log('STACK TRACE: $stackTrace', name: 'DEBUG_ERROR');
       return [];
     }

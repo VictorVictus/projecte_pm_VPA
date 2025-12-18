@@ -101,7 +101,10 @@ class _LandingArtistPageState extends State<LandingArtistPage> {
           ),
         );
       case 1:
-        return SearchPage(service: _artistService);
+        //return SearchPage(service: _artistService);
+        return Center(
+          child: Text("Pantalla search", style: TextStyle(color: Colors.white)),
+        );
       case 2:
         return CreateAlbumPage(
           artistService: _artistService,
