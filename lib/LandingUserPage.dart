@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:projecte_pm/services/UserService.dart';
+import 'package:projecte_pm/pages/home_page.dart';
+import 'package:projecte_pm/pages/search_page.dart';
+import 'package:projecte_pm/pages/create_user_page.dart';
+import 'package:projecte_pm/pages/library_page.dart';
 import 'package:projecte_pm/pages/navigator_pages/home_navigator.dart';
 import 'package:projecte_pm/pages/navigator_pages/search_navigator.dart';
 import 'package:projecte_pm/pages/navigator_pages/create_user_navigator.dart';
 import 'package:projecte_pm/pages/navigator_pages/library_navigator.dart';
-import 'package:projecte_pm/services/UserService.dart';
 
 class LandingUserPage extends StatefulWidget {
   final String userId;
@@ -17,6 +21,14 @@ class _LandingUserPageState extends State<LandingUserPage> {
   late final UserService _userService;
   int _currentIndex = 0;
   bool _isLoading = true;
+
+  //Keys para cada Navigator
+  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
 
   @override
   void initState() {
@@ -54,10 +66,13 @@ class _LandingUserPageState extends State<LandingUserPage> {
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          HomeNavigator(userService: _userService),
-          SearchNavigator(userService: _userService),
-          LibraryNavigator(userService: _userService),
-          CreateUserNavigator(userService: _userService),
+          HomeNavigator(key: _navigatorKeys[0], userService: _userService),
+          SearchNavigator(key: _navigatorKeys[1], userService: _userService),
+          LibraryNavigator(key: _navigatorKeys[2], userService: _userService),
+          CreateUserNavigator(
+            key: _navigatorKeys[3],
+            userService: _userService,
+          ),
         ],
       ),
 
@@ -73,12 +88,22 @@ class _LandingUserPageState extends State<LandingUserPage> {
 
       // --- BOTTOM NAVIGATION ---
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF121212),
         selectedItemColor: Colors.blueAccent,
         unselectedItemColor: Colors.grey,
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        onTap: (i) => setState(() => _currentIndex = i),
+        onTap: (index) {
+          if (index == _currentIndex) {
+            //Reiniciar la pila de la pestaña actual
+            _navigatorKeys[index] = GlobalKey<NavigatorState>();
+            setState(() {});
+          } else {
+            //Cambiar de pestaña y resetear la pila de la pestaña destino
+            _navigatorKeys[index] = GlobalKey<NavigatorState>();
+            setState(() => _currentIndex = index);
+          }
+        },
+
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),

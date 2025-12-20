@@ -4,11 +4,13 @@ import 'package:projecte_pm/pages/search_page.dart';
 
 class SearchNavigator extends StatelessWidget {
   final UserService userService;
+
   const SearchNavigator({super.key, required this.userService});
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
+      key: key as GlobalKey<NavigatorState>?,
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
           builder: (_) => SearchPage(userService: userService),

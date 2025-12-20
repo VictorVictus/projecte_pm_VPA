@@ -20,11 +20,13 @@ class _LibraryPageState extends State<LibraryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        "Library View\n(Aquí carregaràs playlists guardades)",
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.white),
+    return Scaffold(
+      body: Center(
+        child: Text(
+          "Library View\n(Aquí carregaràs playlists guardades)",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

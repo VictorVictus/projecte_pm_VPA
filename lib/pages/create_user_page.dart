@@ -20,11 +20,13 @@ class _CreateUserPageState extends State<CreateUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        "Create User Page",
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.white),
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          "Create User Page",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

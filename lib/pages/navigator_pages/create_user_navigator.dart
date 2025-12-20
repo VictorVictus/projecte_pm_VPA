@@ -4,11 +4,13 @@ import 'package:projecte_pm/pages/create_user_page.dart';
 
 class CreateUserNavigator extends StatelessWidget {
   final UserService userService;
+
   const CreateUserNavigator({super.key, required this.userService});
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
+      key: key as GlobalKey<NavigatorState>?,
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
           builder: (_) => CreateUserPage(userService: userService),

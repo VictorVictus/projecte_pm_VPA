@@ -4,11 +4,13 @@ import 'package:projecte_pm/pages/home_page.dart';
 
 class HomeNavigator extends StatelessWidget {
   final UserService userService;
+
   const HomeNavigator({super.key, required this.userService});
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
+      key: key as GlobalKey<NavigatorState>?,
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
           builder: (_) => HomePage(userService: userService),
