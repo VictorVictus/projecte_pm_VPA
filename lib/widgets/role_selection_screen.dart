@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projecte_pm/LandingArtistPage.dart';
-import 'package:projecte_pm/LandingUserPage.dart';
+import 'package:projecte_pm/landing_artist_page.dart';
+import 'package:projecte_pm/landing_user_page.dart';
 
 import 'package:projecte_pm/services/LoginRegisterService.dart';
 

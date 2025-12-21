@@ -4,8 +4,8 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 
 import 'package:flutter/material.dart';
-import 'package:projecte_pm/LandingArtistPage.dart';
-import 'package:projecte_pm/LandingUserPage.dart';
+import 'package:projecte_pm/landing_artist_page.dart';
+import 'package:projecte_pm/landing_user_page.dart';
 
 import 'package:projecte_pm/services/LoginRegisterService.dart';
 import 'package:projecte_pm/widgets/role_selection_screen.dart';

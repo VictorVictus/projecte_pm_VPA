@@ -67,6 +67,7 @@ class Artist {
   List<String> get genre => _genre;
   Map<String, String> get socialLink => _socialLink;
   DateTime get createdAt => _createdAt;
+  List<SaveId> get artistAlbum => _artistAlbum;
 
   //Llista de Setters
   set name(String name) => _name = name;

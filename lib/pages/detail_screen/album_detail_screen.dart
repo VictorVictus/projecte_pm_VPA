@@ -23,7 +23,6 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
   void initState() {
     super.initState();
     _loadAlbumAndArtist();
-    print("ID recibido en AlbumDetailScreen: ${widget.albumId}");
   }
 
   Future<void> _loadAlbumAndArtist() async {

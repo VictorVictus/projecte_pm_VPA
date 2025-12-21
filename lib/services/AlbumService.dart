@@ -3,8 +3,6 @@ import 'package:projecte_pm/models/song.dart';
 import 'package:projecte_pm/models/album.dart';
 
 class AlbumService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   Future<void> createAlbum({
     required String artistId,
     required String title,
@@ -14,11 +12,11 @@ class AlbumService {
     List<String>? collaborators,
   }) async {
     final createdTime = DateTime.now();
-    final batch = _firestore.batch();
+    final batch = FirebaseFirestore.instance.batch();
 
     try {
       // Creem l'àlbum
-      final albumRef = _firestore.collection('albums').doc();
+      final albumRef = FirebaseFirestore.instance.collection('albums').doc();
       final albumId = albumRef.id;
 
       final Album newAlbum = Album(
@@ -34,7 +32,7 @@ class AlbumService {
       );
 
       for (int i = 0; i < songs.length; i++) {
-        final songRef = _firestore.collection('songs').doc();
+        final songRef = FirebaseFirestore.instance.collection('songs').doc();
         final Song songData = songs[i];
 
         final Song finalSong = Song(
@@ -58,7 +56,9 @@ class AlbumService {
 
       batch.set(albumRef, newAlbum.toMap());
 
-      final artistRef = _firestore.collection('artists').doc(artistId);
+      final artistRef = FirebaseFirestore.instance
+          .collection('artists')
+          .doc(artistId);
 
       batch.update(artistRef, {
         'stats.totalAlbums': FieldValue.increment(1),
