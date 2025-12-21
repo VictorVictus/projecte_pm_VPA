@@ -108,7 +108,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
 
               const SizedBox(height: 10),
               Text(
-                "Album ${album!.createdAt.toDate().day}/${album!.createdAt.toDate().month}/${album!.createdAt.toDate().year}",
+                "Album ${album!.createdAt.day}/${album!.createdAt.month}/${album!.createdAt.year}",
                 style: const TextStyle(color: Colors.white, fontSize: 15),
               ),
               const SizedBox(height: 20),

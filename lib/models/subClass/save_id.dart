@@ -2,25 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SaveId {
   final String _id;
-  final Timestamp _savedAt;
+  final DateTime _savedAt;
 
   //Constructor
-  SaveId({required String id, Timestamp? savedAt})
+  SaveId({required String id, DateTime? savedAt})
     : _id = id,
-      _savedAt = savedAt ?? Timestamp.now();
+      _savedAt = savedAt ?? DateTime.now();
 
   //Llista de getters
   String get id => _id;
-  Timestamp get savedAt => _savedAt;
+  DateTime get savedAt => _savedAt;
 
   factory SaveId.fromMap(Map<String, dynamic> data) {
     return SaveId(
       id: data['id'] as String,
-      savedAt: data['savedAt'] as Timestamp,
+      savedAt: (data['savedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {'id': _id, 'savedAt': _savedAt};
+    return {'id': _id, 'savedAt': Timestamp.fromDate(_savedAt)};
   }
 }

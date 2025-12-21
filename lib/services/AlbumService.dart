@@ -13,7 +13,7 @@ class AlbumService {
     List<String>? genres,
     List<String>? collaborators,
   }) async {
-    final createdTime = Timestamp.now();
+    final createdTime = DateTime.now();
     final batch = _firestore.batch();
 
     try {

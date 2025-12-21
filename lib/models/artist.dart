@@ -15,7 +15,7 @@ class Artist {
   String _manager;
   List<String> _genre;
   Map<String, String> _socialLink;
-  final Timestamp _createdAt;
+  final DateTime _createdAt;
 
   List<SaveId> _artistFollower;
   List<SaveId> _artistSong;
@@ -34,7 +34,7 @@ class Artist {
     String? manager,
     List<String>? genre,
     Map<String, String>? socialLink,
-    Timestamp? createdAt,
+    DateTime? createdAt,
     List<SaveId>? artistFollower,
     List<SaveId>? artistSong,
     List<SaveId>? artistAlbum,
@@ -49,7 +49,7 @@ class Artist {
        _manager = manager ?? '',
        _genre = genre ?? [],
        _socialLink = socialLink ?? {},
-       _createdAt = createdAt ?? Timestamp.now(),
+       _createdAt = createdAt ?? DateTime.now(),
        _artistFollower = artistFollower ?? [],
        _artistSong = artistSong ?? [],
        _artistAlbum = artistAlbum ?? [];
@@ -66,7 +66,7 @@ class Artist {
   String get manager => _manager;
   List<String> get genre => _genre;
   Map<String, String> get socialLink => _socialLink;
-  Timestamp get createdAt => _createdAt;
+  DateTime get createdAt => _createdAt;
 
   //Llista de Setters
   set name(String name) => _name = name;
@@ -150,7 +150,7 @@ class Artist {
       manager: data['manager'] ?? '',
       genre: List<String>.from(data['genre']),
       socialLink: Map<String, String>.from(data['socialLink']),
-      createdAt: data['createdAt'] as Timestamp,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       artistFollower: (data['artistFollower'] as List<dynamic>? ?? [])
           .map(
             (followerData) =>
@@ -180,7 +180,7 @@ class Artist {
       'manager': _manager,
       'genre': _genre,
       'socialLink': _socialLink,
-      'createdAt': _createdAt,
+      'createdAt': Timestamp.fromDate(_createdAt),
       'artistFollower': _artistFollower
           .map((follower) => follower.toMap())
           .toList(),

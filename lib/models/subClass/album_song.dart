@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AlbumSong {
   String _songId;
   int _trackNumber;
-  final Timestamp _addedAt;
+  final DateTime _addedAt;
   String _title;
   double _duration;
 
@@ -13,19 +13,19 @@ class AlbumSong {
     required int trackNumber,
     required String title,
     required double duration,
-    Timestamp? addedAt,
+    DateTime? addedAt,
   }) : _songId = songId,
        _trackNumber = trackNumber,
        _title = title,
        _duration = duration,
-       _addedAt = addedAt ?? Timestamp.now();
+       _addedAt = addedAt ?? DateTime.now();
 
   //Llista de getters
   String get songId => _songId;
   int get trackNumber => _trackNumber;
   String get title => _title;
   double get duration => _duration;
-  Timestamp get addedAt => _addedAt;
+  DateTime get addedAt => _addedAt;
 
   //Llista de setters
   set songId(String songId) => _songId = songId;
@@ -37,7 +37,7 @@ class AlbumSong {
       trackNumber: (data['trackNumber'] as num).toInt(),
       title: data['title'] as String,
       duration: (data['duration'] as num).toDouble(),
-      addedAt: data['addedAt'] as Timestamp,
+      addedAt: (data['addedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -47,7 +47,7 @@ class AlbumSong {
       'trackNumber': _trackNumber,
       'title': _title,
       'duration': _duration,
-      'addedAt': _addedAt,
+      'addedAt': Timestamp.fromDate(_addedAt),
     };
   }
 }

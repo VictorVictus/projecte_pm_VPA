@@ -14,7 +14,7 @@ class Song {
   final List<String> _genre;
   bool _isPublic;
   String _lyrics;
-  final Timestamp _createdAt;
+  final DateTime _createdAt;
 
   List<SaveId> _album;
   List<SaveId> _playlist;
@@ -35,7 +35,7 @@ class Song {
     List<String>? genre,
     bool? isPublic,
     String? lyrics,
-    Timestamp? createdAt,
+    DateTime? createdAt,
     List<SaveId>? album,
     List<SaveId>? playlist,
     List<SaveId>? share,
@@ -45,14 +45,14 @@ class Song {
        _name = name,
        _artistId = artistId,
        _collaboratorsId = collaboratorsId ?? [],
-       _albumId = albumId?? '',
+       _albumId = albumId ?? '',
        _duration = duration,
        _fileURL = fileURL,
        _coverURL = coverURL,
        _genre = genre ?? [],
        _isPublic = isPublic ?? false,
        _lyrics = lyrics ?? '',
-       _createdAt = createdAt ?? Timestamp.now(),
+       _createdAt = createdAt ?? DateTime.now(),
        _album = album ?? [],
        _playlist = playlist ?? [],
        _share = share ?? [],
@@ -68,7 +68,7 @@ class Song {
   String get coverURL => _coverURL;
   bool get isPublic => _isPublic;
   String get lyrics => _lyrics;
-  Timestamp get createdAt => _createdAt;
+  DateTime get createdAt => _createdAt;
 
   //Llista de Setters
   set name(String name) => _name = name;
@@ -171,7 +171,7 @@ class Song {
       genre: data['genre'] as List<String>,
       isPublic: data['isPublic'] as bool,
       lyrics: data['lyrics'] as String,
-      createdAt: data['createdAt'] as Timestamp,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       album: (data['album'] as List<dynamic>? ?? [])
           .map((albumData) => SaveId.fromMap(albumData as Map<String, dynamic>))
           .toList(),
@@ -207,7 +207,7 @@ class Song {
       'genre': _genre,
       'isPublic': _isPublic,
       'lyrics': _lyrics,
-      'createdAt': _createdAt,
+      'createdAt': Timestamp.fromDate(_createdAt),
       'album': _album.map((album) => album.toMap()).toList(),
       'playlist': _playlist.map((playlist) => playlist.toMap()).toList(),
       'share': _share.map((share) => share.toMap()).toList(),

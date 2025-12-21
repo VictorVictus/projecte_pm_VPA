@@ -9,7 +9,7 @@ class User {
   final String _email;
   String _photoURL;
   String _bio;
-  final Timestamp _createdAt;
+  final DateTime _createdAt;
 
   List<SaveId> _follower;
   List<SaveId> _following;
@@ -25,7 +25,7 @@ class User {
     required String email,
     String? photoURL,
     String? bio,
-    Timestamp? createdAt,
+    DateTime? createdAt,
     List<SaveId>? follower,
     List<SaveId>? following,
     List<SaveId>? ownedPlaylist,
@@ -37,7 +37,7 @@ class User {
        _email = email,
        _photoURL = photoURL ?? '',
        _bio = bio ?? '',
-       _createdAt = createdAt ?? Timestamp.now(),
+       _createdAt = createdAt ?? DateTime.now(),
        _follower = follower ?? [],
        _following = following ?? [],
        _ownedPlaylist = ownedPlaylist ?? [],
@@ -51,7 +51,7 @@ class User {
   String get email => _email;
   String get photoURL => _photoURL;
   String get bio => _bio;
-  Timestamp get createdAt => _createdAt;
+  DateTime get createdAt => _createdAt;
 
   //Llista de Setters
   set name(String name) => _name = name;
@@ -137,7 +137,7 @@ class User {
   void addPlayHistory({
     required String songId,
     bool? completed,
-    Timestamp? playedAt,
+    DateTime? playedAt,
   }) {
     _playHistory.add(
       UserPlayHistory(songId: songId, completed: completed, playedAt: playedAt),
@@ -175,7 +175,7 @@ class User {
       email: data['email'] as String,
       photoURL: data['photoURL'] ?? '',
       bio: data['bio'] ?? '',
-      createdAt: data['createdAt'] as Timestamp,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       follower: (data['follower'] as List<dynamic>? ?? [])
           .map(
             (followData) => SaveId.fromMap(followData as Map<String, dynamic>),
@@ -217,7 +217,7 @@ class User {
       'email': _email,
       'photoURL': _photoURL,
       'bio': _bio,
-      'createdAt': _createdAt,
+      'createdAt': Timestamp.fromDate(_createdAt),
       'follower': _follower.map((follower) => follower.toMap()).toList(),
       'following': _following.map((following) => following.toMap()).toList(),
       'ownedPlaylist': _ownedPlaylist.map((ownedP) => ownedP.toMap()).toList(),

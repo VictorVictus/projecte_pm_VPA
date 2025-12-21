@@ -157,7 +157,7 @@ class _CreateAlbumPageState extends State<CreateAlbumPage> {
                       genre: List.from(_selectedGenres),
                       isPublic: true,
                       lyrics: lyricsCtrl.text,
-                      createdAt: Timestamp.now(),
+                      createdAt: DateTime.now(),
                     ),
                   );
                 });
