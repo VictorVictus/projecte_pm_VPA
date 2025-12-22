@@ -37,13 +37,13 @@ class UserService {
   User get user => _user;
 
   // Metòdes CRUD
-  Future<User?> getCurrentUser() async {
+  /*Future<User?> getCurrentUser() async {
     if (_currentUserRef == null) return null;
     final snap = await _currentUserRef!.get();
     if (!snap.exists) return null;
     log('Dades usuari rebudes: ${snap.data()}', name: 'FIREBASE_LOG');
     return User.fromMap(snap.data() as Map<String, dynamic>);
-  }
+  }*/
 
   Future<void> refreshUser() async {
     final snap = await _currentUserRef!.get();

@@ -13,7 +13,7 @@ class Album {
   List<String> _genre;
   bool _isPublic;
   String _label;
-  Timestamp _createdAt;
+  DateTime _createdAt;
 
   List<AlbumSong> _albumSong;
   List<SaveId> _albumFollower;
@@ -28,7 +28,7 @@ class Album {
     List<String>? genre,
     bool? isPublic,
     String? label,
-    Timestamp? createdAt,
+    DateTime? createdAt,
     List<AlbumSong>? albumSong,
     List<SaveId>? albumFollower,
   }) : _id = id,
@@ -39,7 +39,7 @@ class Album {
        _genre = genre ?? [],
        _isPublic = isPublic ?? false,
        _label = label ?? '',
-       _createdAt = createdAt ?? Timestamp.now(),
+       _createdAt = createdAt ?? DateTime.now(),
        _albumSong = albumSong ?? [],
        _albumFollower = albumFollower ?? [];
 
@@ -50,7 +50,8 @@ class Album {
   String get coverURL => _coverURL;
   bool get isPublic => _isPublic;
   String get label => _label;
-  Timestamp get createdAt => _createdAt;
+  DateTime get createdAt => _createdAt;
+  List<AlbumSong> get albumSong => _albumSong;
 
   //Llista de Setters
   set name(String name) => _name = name;
@@ -83,7 +84,14 @@ class Album {
 
   //Metode per afegir una cançó al album
   void addSong(String songId, int trackNumber, String title, double duration) {
-    _albumSong.add(AlbumSong(songId: songId, trackNumber: trackNumber, title: title, duration: duration));
+    _albumSong.add(
+      AlbumSong(
+        songId: songId,
+        trackNumber: trackNumber,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   //Metode per eliminar una cançó de l'album
@@ -111,7 +119,7 @@ class Album {
       genre: List<String>.from(data['genre'] ?? []),
       isPublic: data['isPublic'] ?? false,
       label: data['label'] ?? '',
-      createdAt: data['createdAt'] as Timestamp,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       albumSong: (data['albumSong'] as List<dynamic>? ?? [])
           .map(
             (songData) => AlbumSong.fromMap(songData as Map<String, dynamic>),
@@ -137,7 +145,7 @@ class Album {
       'genre': _genre,
       'isPublic': _isPublic,
       'label': _label,
-      'createdAt': _createdAt,
+      'createdAt': Timestamp.fromDate(_createdAt),
       'albumSong': _albumSong.map((song) => song.toMap()).toList(),
       'albumFollower': _albumFollower
           .map((follower) => follower.toMap())

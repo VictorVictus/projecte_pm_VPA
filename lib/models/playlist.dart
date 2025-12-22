@@ -12,8 +12,8 @@ class Playlist {
   String _coverURL;
   bool _isPublic;
   bool _isCollaborative;
-  Timestamp _updatedAt;
-  final Timestamp _createdAt;
+  DateTime _updatedAt;
+  final DateTime _createdAt;
 
   List<SaveId> _follower;
   List<PlaylistCollaborator> _collaborator;
@@ -28,8 +28,8 @@ class Playlist {
     String? coverURL,
     bool? isPublic,
     bool? isCollaborative,
-    Timestamp? updatedAt,
-    Timestamp? createdAt,
+    DateTime? updatedAt,
+    DateTime? createdAt,
     List<SaveId>? follower,
     List<PlaylistCollaborator>? collaborator,
     List<PlaylistSong>? song,
@@ -40,8 +40,8 @@ class Playlist {
        _coverURL = coverURL ?? '',
        _isPublic = isPublic ?? false,
        _isCollaborative = isCollaborative ?? false,
-       _updatedAt = updatedAt ?? Timestamp.now(),
-       _createdAt = createdAt ?? Timestamp.now(),
+       _updatedAt = updatedAt ?? DateTime.now(),
+       _createdAt = createdAt ?? DateTime.now(),
        _follower = follower ?? [],
        _collaborator = collaborator ?? [],
        _song = song ?? [];
@@ -54,8 +54,8 @@ class Playlist {
   String get coverURL => _coverURL;
   bool get isPublic => _isPublic;
   bool get isCollaborative => _isCollaborative;
-  Timestamp get updatedAt => _updatedAt;
-  Timestamp get createdAt => _createdAt;
+  DateTime get updatedAt => _updatedAt;
+  DateTime get createdAt => _createdAt;
 
   //Llista de Setters
   set name(String name) => _name = name;
@@ -65,7 +65,7 @@ class Playlist {
   set isCollaborative(bool isCollabo) => _isCollaborative = isCollabo;
 
   //Metode per actualitzar updatedAt
-  void updatedAtNow() => _updatedAt = Timestamp.now();
+  void updatedAtNow() => _updatedAt = DateTime.now();
 
   //Metode per afegir un follower a la playlist
   void addFollower(String userId) {
@@ -143,8 +143,8 @@ class Playlist {
       coverURL: data['coverURL'] ?? '',
       isPublic: data['isPublic'] ?? false,
       isCollaborative: data['isCollaborative'] ?? false,
-      updatedAt: data['updatedAt'] as Timestamp,
-      createdAt: data['createdAt'] as Timestamp,
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       follower: (data['follower'] as List<dynamic>? ?? [])
           .map(
             (followData) => SaveId.fromMap(followData as Map<String, dynamic>),
@@ -176,8 +176,8 @@ class Playlist {
       'coverURL': _coverURL,
       'isPublic': _isPublic,
       'isCollaborative': _isCollaborative,
-      'updatedAt': _updatedAt,
-      'createdAt': _createdAt,
+      'updatedAt': Timestamp.fromDate(_updatedAt),
+      'createdAt': Timestamp.fromDate(_createdAt),
       'follower': _follower.map((follower) => follower.toMap()).toList(),
       'collaborator': _collaborator.map((collabo) => collabo.toMap()).toList(),
       'song': _song.map((song) => song.toMap()).toList(),

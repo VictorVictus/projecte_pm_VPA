@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projecte_pm/services/AlbumService.dart';
+import 'package:projecte_pm/services/ArtistService.dart';
 import 'package:projecte_pm/models/album.dart';
+import 'package:projecte_pm/models/artist.dart';
+import 'package:projecte_pm/pages/detail_screen/song_detail_screen.dart';
+import 'package:projecte_pm/pages/detail_screen/artist_detail_screen.dart';
 
 class AlbumDetailScreen extends StatefulWidget {
   final String albumId;
@@ -11,62 +15,148 @@ class AlbumDetailScreen extends StatefulWidget {
 }
 
 class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
-  Album? album; // aquí guardaremos el álbum
-  bool isLoading = true; // para mostrar un loader mientras carga
+  Album? album;
+  Artist? artist;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadAlbum(); // cargamos el álbum al iniciar
+    _loadAlbumAndArtist();
   }
 
-  Future<void> _loadAlbum() async {
+  Future<void> _loadAlbumAndArtist() async {
     try {
-      final result = await AlbumService.getAlbum(widget.albumId);
+      final resultAlbum = await AlbumService.getAlbum(widget.albumId);
+
       setState(() {
-        album = result;
-        isLoading = false;
+        album = resultAlbum;
       });
+
+      //Artista es carrega només si album existeix
+      if (album != null) {
+        final resultArtist = await ArtistService.getArtist(album!.artistId);
+
+        setState(() {
+          artist = resultArtist;
+        });
+      }
     } catch (e) {
+      print("Error cargando datos: $e");
+    } finally {
       setState(() {
         isLoading = false;
       });
-      print("Error cargando álbum: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (album == null) {
-      return const Center(
-        child: Text(
-          "Álbum no encontrado",
-          style: TextStyle(color: Colors.white),
+      return const Scaffold(
+        body: Center(
+          child: Text("Álbum no trobat", style: TextStyle(color: Colors.white)),
         ),
       );
     }
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            album!.name,
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+    return Scaffold(
+      appBar: AppBar(title: Text(album!.name)),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Image.network(
+                  album!.coverURL,
+                  fit: BoxFit.cover,
+                  width: 225,
+                  height: 225,
+                ),
+              ),
+              const SizedBox(height: 16),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ArtistDetailScreen(artistId: album!.artistId),
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 10,
+                      backgroundImage: NetworkImage(artist!.photoURL),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      artist!.name,
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 10),
+              Text(
+                "Album ${album!.createdAt.day}/${album!.createdAt.month}/${album!.createdAt.year}",
+                style: const TextStyle(color: Colors.white, fontSize: 15),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                "Cançons",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: album!.albumSong.length,
+                itemBuilder: (context, index) {
+                  final song = album!.albumSong[index];
+
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Text(
+                      "${song.trackNumber}",
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    title: Text(
+                      song.title,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    subtitle: Text(
+                      song.duration.toStringAsFixed(2),
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => SongDetailScreen(songId: song.songId),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
-          Text(
-            "Artista: ${album!.artistId}",
-            style: const TextStyle(color: Colors.grey),
-          ),
-          Text(
-            "Canciones: ${album!.songCount()}",
-            style: const TextStyle(color: Colors.grey),
-          ),
-        ],
+        ),
       ),
     );
   }
